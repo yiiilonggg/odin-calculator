@@ -39,12 +39,12 @@ function calculate() {
     return operate(firstInput, secondInput, operator);
 }
 
-function displayNumber(event) {
-    if (display.textContent == "ERROR" || (display.textContent == "0" && event.target.textContent != ".") || justOperator || justEqual) {
-        display.textContent = (event.target.textContent == ".") ? "0." : event.target.textContent;
+function displayNumber(target) {
+    if (display.textContent == "ERROR" || (display.textContent == "0" && target.textContent != ".") || justOperator || justEqual) {
+        display.textContent = (target.textContent == ".") ? "0." : target.textContent;
     } else {
-        if (display.textContent.includes(".") && event.target.textContent == ".") return; 
-        display.textContent += event.target.textContent;
+        if (display.textContent.includes(".") && target.textContent == ".") return; 
+        display.textContent += target.textContent;
     }
     justEqual = false;
     justOperator = false;
@@ -74,34 +74,34 @@ function backspace(event) {
     if (display.textContent == "") display.textContent = "0";
 }
 
-function operatorFunction(event) {
+function operatorFunction(target) {
+    operatorArr.forEach(button => inactiveOperator(button));
     if (first == undefined || first == "ERROR") {
-        if (event.target.textContent != "=") {
+        if (target.textContent != "=") {
             first = display.textContent;
-            operator = event.target.textContent;
-            activeOperator(event.target);
+            operator = target.textContent;
+            activeOperator(target);
             justOperator = true;
         } else {
             justEqual = true;
         }
     } else if (justEqual) {
-        if (event.target.textContent != "=") {
-            operator = event.target.textContent;
-            activeOperator(event.target);
+        if (target.textContent != "=") {
+            operator = target.textContent;
+            activeOperator(target);
             justOperator = true;
         }
     } else {
-        if (event.target.textContent == "=" && operator == undefined) return;
+        if (target.textContent == "=" && operator == undefined) return;
         second = display.textContent;
         let res = operate(first, second, operator);
         first = res;
         second = undefined;
-        operatorArr.forEach(button => inactiveOperator(button));
-        if (event.target.textContent == "=") {
+        if (target.textContent == "=" || res == "ERROR") {
             operator = undefined;
         } else {
-            operator = event.target.textContent;
-            activeOperator(event.target);
+            operator = target.textContent;
+            activeOperator(target);
             justOperator = true;
         }
         display.textContent = res;
@@ -119,12 +119,24 @@ function inactiveOperator(operatorButton) {
     operatorButton.style.borderColor = "lightgray";
 }
 
+function keyboard(event) {
+    const button = (event.key == "Enter") ? document.querySelector(".equal") : document.querySelector(`button[key="${event.key}"]`);
+    if (!button) return;
+    if (button.classList.contains("operator")) {
+        operatorFunction(button);
+    } else if (button.classList.contains("number")) {
+        displayNumber(button);
+    } else if (button.classList.contains("backspace")) {
+        backspace(button);
+    }
+}
+
 const display = document.querySelector("#display");
 display.textContent = 0;
 
 const numberArr = Array.from(document.querySelectorAll(".number"));
 numberArr.forEach(button => {
-    button.addEventListener('click', displayNumber);
+    button.addEventListener('click', (event) => displayNumber(event.target));
 });
 
 const clearButton = document.querySelector(".clear");
@@ -136,7 +148,7 @@ backspaceButton.addEventListener("click", backspace);
 
 const operatorArr = Array.from(document.querySelectorAll(".operator"));
 operatorArr.forEach(operator => {
-    operator.addEventListener("click", operatorFunction);
+    operator.addEventListener("click", (event) => operatorFunction(event.target));
 });
 
 let first = undefined;
@@ -144,3 +156,5 @@ let second = undefined;
 let operator = undefined;
 let justEqual = false;
 let justOperator = false;
+
+window.addEventListener("keydown", keyboard);
