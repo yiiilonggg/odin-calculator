@@ -1,6 +1,3 @@
-const numbersDiv = document.querySelector(".numbers");
-const operatorsDiv = document.querySelector(".operators");
-
 function add(x, y) {
     return x + y;
 }
