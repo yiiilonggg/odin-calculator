@@ -29,17 +29,12 @@ body {
     grid-auto-rows: 1fr;
 }
 
-.buttons button:nth-child(8) {
-    grid-column: 4;
-    grid-row: 2 / 4;
-}
-
-.buttons button:nth-child(15) {
+.buttons button:nth-child(16) {
     grid-column: 4;
     grid-row: 4 / 6;
 }
 
-.buttons button:nth-child(16) {
+.buttons button:nth-child(17) {
     grid-column: 1 / 3;
     grid-row: 5;
 }

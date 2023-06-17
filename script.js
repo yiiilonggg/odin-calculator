@@ -40,9 +40,7 @@ function calculate() {
 }
 
 function displayNumber(event) {
-    console.log(justEqual);
     if (display.textContent == "ERROR" || (display.textContent == "0" && event.target.textContent != ".") || justOperator || justEqual) {
-        console.log(display.textContent == "ERROR", display.textContent == "0", event.target.textContent != ".", justOperator, justEqual);
         display.textContent = (event.target.textContent == ".") ? "0." : event.target.textContent;
     } else {
         if (display.textContent.includes(".") && event.target.textContent == ".") return; 
@@ -68,6 +66,12 @@ function completeClear(event) {
     justOperator = false;
     display.textContent = "0";
     operatorArr.forEach(button => inactiveOperator(button));
+}
+
+function backspace(event) {
+    if (display.textContent == "0") return;
+    display.textContent = display.textContent.substring(0, display.textContent.length - 1);
+    if (display.textContent == "") display.textContent = "0";
 }
 
 function operatorFunction(event) {
@@ -103,7 +107,6 @@ function operatorFunction(event) {
         display.textContent = res;
         justEqual = true;
     }
-    console.log(display.textContent);
 }
 
 function activeOperator(operatorButton) {
@@ -127,6 +130,9 @@ numberArr.forEach(button => {
 const clearButton = document.querySelector(".clear");
 clearButton.addEventListener("click", clearDisplay);
 clearButton.addEventListener("dblclick", completeClear);
+
+const backspaceButton = document.querySelector(".backspace");
+backspaceButton.addEventListener("click", backspace);
 
 const operatorArr = Array.from(document.querySelectorAll(".operator"));
 operatorArr.forEach(operator => {
